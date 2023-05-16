@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"sync"
 	"time"
@@ -9,10 +10,13 @@ import (
 )
 
 func main() {
+	minute_schedule := flag.Int("schedule", 60, "How often to post (in minutes)")
+	flag.Parse()
+
 	scheduler := gocron.NewScheduler(time.UTC)
 	var wg sync.WaitGroup
 
-	job, err := scheduler.Every(15).Second().Do(func() {
+	job, err := scheduler.Every(*minute_schedule).Minutes().Do(func() {
 		fmt.Println("Meow")
 	})
 	if err != nil {
