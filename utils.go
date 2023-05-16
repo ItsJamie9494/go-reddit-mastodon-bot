@@ -10,6 +10,7 @@ import (
 type GlobalConfig struct {
 	ClientID     string
 	ClientSecret string
+	AccessToken  string
 	APIBaseURL   string
 	Subreddit    string
 	Schedule     int
