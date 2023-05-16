@@ -128,5 +128,5 @@ func UploadMedia(GlobalConfig *GlobalConfig) {
 	if err != nil {
 		log.Fatal("Unable to post status to Mastodon: ", err)
 	}
-	fmt.Printf(status.URL)
+	log.Default().Print(status.URL)
 }
