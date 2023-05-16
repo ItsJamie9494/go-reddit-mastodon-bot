@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"sort"
@@ -64,4 +66,38 @@ func Contains[T comparable](ss []T, elem T) bool {
 	}
 
 	return false
+}
+
+func AppendToImagesFile(URL string) {
+	file, err := os.OpenFile("images.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		log.Default().Print("WARNING: Cannot access images.txt. Does the file exist?")
+		return
+	}
+	defer file.Close()
+
+	if _, err = file.WriteString(fmt.Sprint(URL, "\n")); err != nil {
+		log.Default().Print("WARNING: Failed to save current image to images.txt")
+		return
+	}
+}
+
+func LoadImagesFile() []string {
+	file, err := os.OpenFile("images.txt", os.O_RDONLY, 0600)
+	if err != nil {
+		log.Default().Print("WARNING: Cannot access images.txt. Does the file exist?")
+		return nil
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if scanner.Err() != nil {
+		log.Default().Print("WARNING: Failed to read images.txt")
+		return nil
+	}
+	return lines
 }

@@ -57,6 +57,7 @@ func GetMastodonClientWithLimits(GlobalConfig *GlobalConfig) (*mastodon.Client, 
 
 func Fetch(GlobalConfig *GlobalConfig) *reddit.Post {
 	client := reddit.DefaultClient()
+	images := LoadImagesFile()
 	posts, _, err := client.Subreddit.HotPosts(context.Background(), GlobalConfig.Subreddit, &reddit.ListOptions{
 		Limit: 150, After: "", Before: "",
 	})
@@ -66,8 +67,7 @@ func Fetch(GlobalConfig *GlobalConfig) *reddit.Post {
 	}
 
 	posts = Filter(posts, func(p *reddit.Post) bool {
-		// TODO: Save image links so we don't have duplicates
-		return !p.IsSelfPost && p.UpvoteRatio >= 0.9
+		return !p.IsSelfPost && p.UpvoteRatio >= 0.9 && !Contains(images, p.URL)
 	})
 
 	var scores []int
@@ -81,7 +81,8 @@ func Fetch(GlobalConfig *GlobalConfig) *reddit.Post {
 
 	best_post := posts[rand.Intn(len(posts))]
 
-	fmt.Printf(best_post.URL)
+	log.Default().Print(best_post.URL)
+	AppendToImagesFile(best_post.URL)
 
 	return best_post
 }
