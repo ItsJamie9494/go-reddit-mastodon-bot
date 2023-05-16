@@ -1,6 +1,31 @@
 package main
 
-import "sort"
+import (
+	"encoding/json"
+	"log"
+	"os"
+	"sort"
+)
+
+type GlobalConfig struct {
+	ClientID     string
+	ClientSecret string
+	APIBaseURL   string
+	Subreddit    string
+	Schedule     int
+}
+
+func LoadConfig() *GlobalConfig {
+	file, _ := os.Open("conf.json")
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	conf := GlobalConfig{}
+	err := decoder.Decode(&conf)
+	if err != nil {
+		log.Fatal("Failed to load configuration file: ", err)
+	}
+	return &conf
+}
 
 func Median(data []int) int {
 	dataCopy := make([]int, len(data))
@@ -28,4 +53,14 @@ func Filter[T any](ss []T, test func(T) bool) (ret []T) {
 		}
 	}
 	return
+}
+
+func Contains[T comparable](ss []T, elem T) bool {
+	for _, v := range ss {
+		if v == elem {
+			return true
+		}
+	}
+
+	return false
 }

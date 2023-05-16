@@ -1,0 +1,7 @@
+{
+    "ClientID": "The client id of your Mastodon account",
+    "ClientSecret": "The client secret of your Mastodon account",
+    "APIBaseURL": "The url of the bot instance. For example, https://botsin.space",
+    "Subreddit": "The name of the subreddit to pull data from",
+    "Schedule": 60 // The freqency to post at
+}
