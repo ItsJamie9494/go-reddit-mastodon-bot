@@ -1,19 +1,29 @@
 package main
 
 import (
-	"sync"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-co-op/gocron"
 )
 
+func MainLoop() {
+	exitSignal := make(chan os.Signal, 1)
+	signal.Notify(exitSignal, syscall.SIGINT, syscall.SIGTERM)
+	<-exitSignal
+}
+
 func main() {
 	config := LoadConfig()
-	scheduler := gocron.NewScheduler(time.UTC)
-	var wg sync.WaitGroup
 
-	job, err := scheduler.Every(config.Schedule).Minutes().Do(func() {
-		UploadMedia(config)
+	scheduler := gocron.NewScheduler(time.UTC)
+
+	_, err := scheduler.Every(config.Schedule).Minutes().Do(func() {
+		if time.Now().Minute() == 0 {
+			UploadMedia(config)
+		}
 	})
 	if err != nil {
 		panic("Unable to start scheduler")
@@ -21,8 +31,5 @@ func main() {
 
 	scheduler.StartAsync()
 
-	for !job.IsRunning() {
-		wg.Add(1)
-		wg.Wait()
-	}
+	MainLoop()
 }
