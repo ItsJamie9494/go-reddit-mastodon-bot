@@ -21,7 +21,7 @@ func main() {
 	scheduler := gocron.NewScheduler(time.UTC)
 
 	_, err := scheduler.Every(config.Schedule).Minutes().Do(func() {
-		if time.Now().Minute() == 0 {
+		if (config.Schedule == 60 && time.Now().Minute() == 0) || config.Schedule != 60 {
 			UploadMedia(config)
 		}
 	})
