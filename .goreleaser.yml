@@ -9,7 +9,7 @@ builds:
 
 dockers:
   - image_templates:
-      ["ghcr.io/itsjamie9494/go-reddit-mastodon-bot:{{ .Version }}"]
+      ["ghcr.io/itsjamie9494/go-reddit-mastodon-bot:latest"]
     dockerfile: Dockerfile
     build_flag_templates:
       - --label=org.opencontainers.image.title={{ .ProjectName }}
