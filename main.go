@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,7 +17,9 @@ func MainLoop() {
 }
 
 func main() {
-	config := LoadConfig()
+	conf_location := flag.String("config-file", "conf.json", "Location of the config file")
+	flag.Parse()
+	config := LoadConfig(*conf_location)
 
 	scheduler := gocron.NewScheduler(time.UTC)
 

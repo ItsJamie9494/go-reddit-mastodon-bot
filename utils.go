@@ -18,8 +18,8 @@ type GlobalConfig struct {
 	Schedule     int
 }
 
-func LoadConfig() *GlobalConfig {
-	file, _ := os.Open("conf.json")
+func LoadConfig(filename string) *GlobalConfig {
+	file, _ := os.Open(filename)
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	conf := GlobalConfig{}
