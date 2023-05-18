@@ -68,8 +68,8 @@ func Contains[T comparable](ss []T, elem T) bool {
 	return false
 }
 
-func AppendToImagesFile(URL string) {
-	file, err := os.OpenFile("images.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+func AppendToImagesFile(File string, URL string) {
+	file, err := os.OpenFile(File, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Default().Print("WARNING: Cannot access images.txt. Does the file exist?")
 		return
@@ -77,13 +77,13 @@ func AppendToImagesFile(URL string) {
 	defer file.Close()
 
 	if _, err = file.WriteString(fmt.Sprint(URL, "\n")); err != nil {
-		log.Default().Print("WARNING: Failed to save current image to images.txt")
+		log.Default().Print("WARNING: Failed to save current image to ", File)
 		return
 	}
 }
 
-func LoadImagesFile() []string {
-	file, err := os.OpenFile("images.txt", os.O_RDONLY, 0600)
+func LoadImagesFile(File string) []string {
+	file, err := os.OpenFile(File, os.O_RDONLY, 0600)
 	if err != nil {
 		log.Default().Print("WARNING: Cannot access images.txt. Does the file exist?")
 		return nil
@@ -96,7 +96,7 @@ func LoadImagesFile() []string {
 		lines = append(lines, scanner.Text())
 	}
 	if scanner.Err() != nil {
-		log.Default().Print("WARNING: Failed to read images.txt")
+		log.Default().Print("WARNING: Failed to read ", File)
 		return nil
 	}
 	return lines

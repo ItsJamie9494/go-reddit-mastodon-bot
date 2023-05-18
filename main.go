@@ -18,6 +18,7 @@ func MainLoop() {
 
 func main() {
 	conf_location := flag.String("config-file", "conf.json", "Location of the config file")
+	img_location := flag.String("image-file", "images.txt", "Location of the image db file")
 	flag.Parse()
 	config := LoadConfig(*conf_location)
 
@@ -25,7 +26,7 @@ func main() {
 
 	_, err := scheduler.Every(config.Schedule).Minutes().Do(func() {
 		if (config.Schedule == 60 && time.Now().Minute() == 0) || config.Schedule != 60 {
-			UploadMedia(config)
+			UploadMedia(config, *img_location)
 		}
 	})
 	if err != nil {

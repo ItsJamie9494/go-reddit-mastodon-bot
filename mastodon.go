@@ -55,9 +55,9 @@ func GetMastodonClientWithLimits(GlobalConfig *GlobalConfig) (*mastodon.Client, 
 	return c, *data
 }
 
-func Fetch(GlobalConfig *GlobalConfig) *reddit.Post {
+func Fetch(GlobalConfig *GlobalConfig, ImgLocation string) *reddit.Post {
 	client := reddit.DefaultClient()
-	images := LoadImagesFile()
+	images := LoadImagesFile(ImgLocation)
 	posts, _, err := client.Subreddit.HotPosts(context.Background(), GlobalConfig.Subreddit, &reddit.ListOptions{
 		Limit: 150, After: "", Before: "",
 	})
@@ -82,7 +82,7 @@ func Fetch(GlobalConfig *GlobalConfig) *reddit.Post {
 	best_post := posts[rand.Intn(len(posts))]
 
 	log.Default().Print(best_post.URL)
-	AppendToImagesFile(best_post.URL)
+	AppendToImagesFile(ImgLocation, best_post.URL)
 
 	return best_post
 }
@@ -100,11 +100,11 @@ func ValidateMedia(c Config, URL string) bool {
 	}
 }
 
-func UploadMedia(GlobalConfig *GlobalConfig) {
+func UploadMedia(GlobalConfig *GlobalConfig, ImgLocation string) {
 	client, config := GetMastodonClientWithLimits(GlobalConfig)
-	image := Fetch(GlobalConfig)
+	image := Fetch(GlobalConfig, ImgLocation)
 	for !ValidateMedia(config, image.URL) {
-		image = Fetch(GlobalConfig)
+		image = Fetch(GlobalConfig, ImgLocation)
 	}
 	req, err := http.Get(image.URL)
 	if err != nil {
