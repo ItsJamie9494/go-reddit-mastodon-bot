@@ -11,6 +11,7 @@ dockers:
   - image_templates:
       ["ghcr.io/itsjamie9494/go-reddit-mastodon-bot:latest"]
     dockerfile: Dockerfile
+    skip_push: false
     build_flag_templates:
       - --label=org.opencontainers.image.title={{ .ProjectName }}
       - --label=org.opencontainers.image.description={{ .ProjectName }}
