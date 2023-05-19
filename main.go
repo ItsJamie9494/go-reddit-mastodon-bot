@@ -24,7 +24,7 @@ func main() {
 
 	scheduler := gocron.NewScheduler(time.UTC)
 
-	_, err := scheduler.Every(config.Schedule).Minutes().Do(func() {
+	_, err := scheduler.Every(1).Minutes().Do(func() {
 		if (config.Schedule == 60 && time.Now().Minute() == 0) || config.Schedule != 60 {
 			UploadMedia(config, *img_location)
 		}
