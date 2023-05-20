@@ -2,3 +2,7 @@
 conf.json
 
 dist
+
+#container stuff
+melange.rsa*
+packages

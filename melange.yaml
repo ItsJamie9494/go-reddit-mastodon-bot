@@ -1,0 +1,29 @@
+package:
+  name: capybot
+  version: 0.1.0
+  description: cute little bot for your capy needs
+  target-architecture:
+    - all
+  copyright:
+    - license: MIT
+      paths:
+        - "*"
+  dependencies:
+    runtime:
+     - ca-certificates-bundle
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+      - https://dl-cdn.alpinelinux.org/alpine/edge/community
+    packages:
+      - alpine-baselayout-data
+      - ca-certificates-bundle
+      - busybox
+      - go
+
+pipeline:
+  - name: Build Go application
+    runs: |
+      CGO_ENABLED=0 go build -o "${{targets.destdir}}/usr/bin/capybot" .
