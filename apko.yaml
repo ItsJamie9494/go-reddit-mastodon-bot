@@ -1,7 +1,7 @@
 contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/edge/main
-    - /work/packages
+    - /github/workspace/packages
   packages:
     - alpine-baselayout-data
     - capybot

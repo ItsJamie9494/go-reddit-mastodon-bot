@@ -13,28 +13,30 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+    - name: Generate snapshot date
+      id: snapshot-date
+      run: |
+        echo ::set-output name=date::$(date -u +%Y%m%d)
+        echo ::set-output name=epoch::$(date -u +%s)
+      shell: bash
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.20.4
-        cache: true
+    - uses: actions/checkout@v3
 
     - name: Set up Docker
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      uses: docker/setup-qemu-action@v2.1.0
 
-    - name: Build and Push Container
-      uses: goreleaser/goreleaser-action@v4
+    - name: Build Melange Package
+      uses: chainguard-dev/actions/melange-build@main
       with:
-        distribution: goreleaser
-        version: latest
-        args: release --clean
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        config: melange.yaml
+        archs: amd64
+        sign-with-temporary-key: true
+
+    - name: Build with apko
+      uses: distroless/actions/apko-publish@main
+      with:
+        config: apko.yaml
+        tag: ghcr.io/itsjamie9494/capybot:latest
+        keyring-append: /github/workspace/melange.rsa.pub
+        archs: amd64
+        source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
