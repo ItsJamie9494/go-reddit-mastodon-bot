@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -34,6 +35,8 @@ func main() {
 	}
 
 	scheduler.StartAsync()
+
+	fmt.Printf("Capybot\nCopyright 2023 Jamie Murphy\n\nRunning with config from %s\n", *conf_location)
 
 	MainLoop()
 }
